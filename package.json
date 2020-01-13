@@ -1,6 +1,6 @@
 {
   "name": "wzwtetris",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "高仿王中王游戏机里的俄罗斯方块",
   "main": "index.js",
   "dependencies": {

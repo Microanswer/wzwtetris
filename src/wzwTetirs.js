@@ -30,7 +30,7 @@ window.WzwTetirs = function (domId, option) {
     }
 
     /* 急速模式的时间间隔 */
-    var TURBO_TIME_SPACE = 5;
+    var TURBO_TIME_SPACE = 3;
 
     /* 材料每次开始下落时将使用此数字从左到右指定点阵个数的偏移量向下掉落 */
     var STUFF_START_X_OFFSET = 3;
@@ -44,17 +44,17 @@ window.WzwTetirs = function (domId, option) {
     var drawColor1      = option.drawColor1        || '#010700'; /* 画笔浓颜色 */
     var drawColor2      = option.drawColor2        || '#ccebce'; /* 画笔浅颜色 */
     var bgColor         = option.bgColor           || '#dbffdd'; /* 背景颜色 */
-    var lineWidth       = option. lineWidth        || 1;         /* 画笔粗细 */
-    var fontSize        = option. fontSize         || 17;        /* 文字大小 */
-    var fontSpace       = option. fontSpace        || 17;        /* 文字行间距 */
+    var lineWidth       = option.lineWidth         || 1;         /* 画笔粗细 */
+    var fontSize        = option.fontSize          || 17;        /* 文字大小 */
+    var fontSpace       = option.fontSpace         || 17;        /* 文字行间距 */
 
-    var atomwidthCount  = option. atomwidthCount   || 10;        /* 游戏区域，横向的点阵个数 */
-    var atomheightCount = option. atomheightCount  || 20;        /* 游戏区域，竖向的点阵个数 */
+    var atomwidthCount  = option.atomwidthCount    || 10;        /* 游戏区域，横向的点阵个数 */
+    var atomheightCount = option.atomheightCount   || 20;        /* 游戏区域，竖向的点阵个数 */
     var atomWidth       = null;                                  /* 单个点阵宽度 */
     var atomHeight      = null;                                  /* 单个点阵高度 */
-    var atomSpace       = option. atomSpace        || 5;         /* 点阵间隙大小 */
-    var atomBorder      = option. atomBorder       || 3;         /* 点阵外轮廓粗细 */
-    var atomInset       = option. atomInset        || 1;         /* 点阵中间的间隙大小 */
+    var atomSpace       = option.atomSpace         || 5;         /* 点阵间隙大小 */
+    var atomBorder      = option.atomBorder        || 3;         /* 点阵外轮廓粗细 */
+    var atomInset       = option.atomInset         || 1;         /* 点阵中间的间隙大小 */
 
     var currStuff       = null;                           /* 当前正在下落的材料 */
     var stuffOffsetX    = STUFF_START_X_OFFSET;           /* 材料每次开始下落时将使用此数字从左到右指定点阵个数的偏移量向下掉落 */
@@ -292,6 +292,11 @@ window.WzwTetirs = function (domId, option) {
                 score += 1;
                 successLine.push(i);
 
+                /* 如果一次消了4行，再加1分 */
+                if (successLine.length >= 4) {
+                    score += 1;
+                }
+
                 /*提升等级*/
                 var newLevel = SCORE_LEVELS[String(score)];
                 if (newLevel > level) {
@@ -315,14 +320,14 @@ window.WzwTetirs = function (domId, option) {
                     Util.eachNum(rowm, 1, function (row) {
                         var lastRow = row - 1;
 
+                        staticStuffs[row] = [].concat(staticStuffs[lastRow]);
+
                         if (lastRow === 0) {
-                            staticStuffs[row] = [];
+                            staticStuffs[lastRow] = [];
                             Util.eachNum(0, atomwidthCount - 1, function (num) {
-                                staticStuffs[row][num] = 0;
+                                staticStuffs[lastRow][num] = 0;
                             });
 
-                        } else {
-                            staticStuffs[row] = [].concat(staticStuffs[lastRow]);
                         }
                     });
                 }
@@ -378,7 +383,7 @@ window.WzwTetirs = function (domId, option) {
                 }
 
                 /* 素材本身出现的位置都已经是頂部了，这绝逼是玩家玩到顶了。 */
-                if (c_stuffOffsetY <= 0 && grounded) {
+                if (c_stuffOffsetY === 0 && grounded) {
                     /* 游戏结束 */
                     return -1;
                 }

@@ -1,5 +1,5 @@
 # wzwtetris 简介 - intro
-俄罗斯方块 tetris，小时候玩的那种掌上王中王游戏机上就有俄罗斯方块，本项目还原了里面的俄罗斯的效果。
+俄罗斯方块 tetris，小时候玩的那种掌上王中王游戏机上就有俄罗斯方块，本项目还原了里面的俄罗斯方块的效果。游戏共有23关，随着游戏越往后进行关卡越高难度越大，下降速度越快。
 
 # 在线预览 - preview
 
@@ -12,7 +12,7 @@
 通过 jsdelivr，可以快速将 github 上的资源用于cdn公共资源，所以，你可以使用下方的连接将本游戏组件引入你的网页里：
 
 ```html
-    <script src="https://cdn.jsdelivr.net/gh/microanswer/wzwtetris@1.0.0/dist/wzwTetirs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/microanswer/wzwtetris@1.0.1/dist/wzwTetirs.min.js"></script>
 ```
 
 然后你就可以愉快的使用了：
@@ -95,3 +95,9 @@ game.resetGame();
 
 
 [立即查看博文](https://www.microanswer.cn/blog/68)
+
+# 历史版本 - history
+
+- 1.0.1 修复堆砌到顶部后，再消一行，顶部的材料没有跟随下落。\
+加入一次消除4行则多加一分的加分逻辑。
+- 1.0.0 发布第一版本。
