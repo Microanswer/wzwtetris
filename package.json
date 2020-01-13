@@ -1,0 +1,26 @@
+{
+  "name": "wzwtetris",
+  "version": "1.0.0",
+  "description": "高仿王中王游戏机里的俄罗斯方块",
+  "main": "index.js",
+  "dependencies": {
+    "webpack": "^4.41.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "build": "node ./build/doBuild"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MicroAnswer/wzwtetris.git"
+  },
+  "keywords": [
+    "tetris"
+  ],
+  "author": "Microanswer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MicroAnswer/wzwtetris/issues"
+  },
+  "homepage": "https://github.com/MicroAnswer/wzwtetris#readme"
+}

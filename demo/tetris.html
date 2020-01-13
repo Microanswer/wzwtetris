@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>俄罗斯方块 - Microanswer</title>
+    <style>
+        *{
+        -webkit-touch-callout:none; /系统默认菜单被禁用/
+        -webkit-user-select:none; /webkit浏览器/
+        -moz-user-select:none;/火狐/
+        -ms-user-select:none; /IE10/
+        user-select:none;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .game-shell {
+            border-radius: 10px;
+            max-width: 375px;
+            overflow: hidden;
+            margin: 0 auto;
+            background-color: #4fb1e6;
+            /*box-shadow: 0 1px 6px gray;*/
+        }
+        .none {
+            opacity: 0 !important;
+        }
+
+        .screen-top-inset,
+        .screen-bottom-inset{
+            position: relative;
+            height: 60px;
+        }
+
+        .screen-bottom-inset {
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+        .screen-bottom-inset::before {
+            position: absolute;
+            content: ' ';
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 99999px;
+
+            left: -25px;
+        }
+        .screen-bottom-inset::after {
+            position: absolute;
+            content: ' ';
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 99999px;
+
+            right: -25px;
+        }
+
+        .controller {
+            display: flex;
+            display: -webkit-flex;
+
+            justify-content: space-around;
+            -webkit-justify-content: space-around;
+        }
+
+        button {
+            border-radius: 99999px;
+            border: solid 1px #dab700;
+            background-color: #e2be00;
+            box-shadow: 0 0 4px 2px gray;
+            outline: none;
+            cursor: pointer;
+        }
+
+        button.sm {width: 25px;height: 25px;}
+        button.md {width: 45px;height: 45px;}
+        button.lg {width: 65px;height: 65px;}
+
+        .controller .wasd,
+        .controller .turn{
+            text-align: center;
+        }
+    </style>
+</head>
+<body ondragstart="return false" oncontextmenu="return false" onselectstart="return false">
+<div class="game-shell">
+
+    <div class="screen-top-inset"></div>
+
+    <div id="screen" style="margin: 0 auto"></div>
+
+    <div class="screen-bottom-inset"></div>
+
+    <div class="controller">
+        <!-- 方向键 -->
+        <div class="wasd">
+            <div class="lr">
+                <button class="md" id="left" title="左"></button>
+                <button class="md none"></button>
+                <button class="md" id="right" title="右"></button>
+            </div>
+            <div class="d" style="margin-top: 10px">
+                <button class="md" id="down" title="下"></button>
+            </div>
+        </div>
+
+        <!-- 变型键 -->
+        <div class="turn">
+            <button class="lg" id="change2" title="旋转"></button>
+        </div>
+    </div>
+    <div class="controller" style="margin-top: 35px">
+        <div>
+            <button class="sm" id="start" title="开始"></button>&nbsp;&nbsp;&nbsp;
+            <button class="sm" id="pause" title="暂停"></button>&nbsp;&nbsp;&nbsp;
+            <button class="sm" id="reset" title="复位"></button>
+        </div>
+    </div>
+    <div class="controller" style="font-size: 11px;color: white;">
+        <div>
+            <span>开始</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span>暂停</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span>复位</span>
+        </div>
+    </div>
+
+    <p style="color: white;font-size: 11px;margin: 25px 15px auto 15px">
+        <b>玩法介绍：</b><br>
+        1.点击[开始]按钮开始新游戏。<br>
+        2.游戏过程可以点击[暂停]。<br>
+        3.[复位]按钮可以重置游戏到初始状态。<br>
+        4.如果你用电脑，可以使用方向键来控制。<br>
+        [W、↑]变型，[S、↓]下降，[A、←]左，[D、→]右
+    </p>
+    <p style="color: white;font-size: 11px;margin: 12px 15px">
+        <b>关于：</b><br>
+        作者:Microanswer<br>
+        首页:<a target="_blank" href="https://www.microanswer.cn">www.microanswer.cn</a><br>
+        源码:<a target="_blank" href="https://www.microanswer.cn/blog/68">查看源码</a><br>
+        <script type="text/javascript">
+            var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+            document.write(unescape("%3Cspan style='vertical-align:middle' id='cnzz_stat_icon_1263962182'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1263962182%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+    </p>
+
+
+</div>
+
+<script src="../dist/wzwTetirs.min.js"></script>
+<script>
+    var game = new WzwTetirs("screen", {
+        gameWidth:      160,
+        gameHeight:     215,
+        splitPosition:  110,
+
+        fontSize:       13,
+        fontSpace:      13,
+
+        atomSpace:      2.5,
+        atomBorder:     1.5,
+        atomInset:      0.5
+    });
+
+    console.log(game);
+
+    document.querySelector("#reset")  .addEventListener("click", function (evt) {game.resetGame();  });
+    document.querySelector("#start")  .addEventListener("click", function (evt) {game.startGame();  });
+    document.querySelector("#left")   .addEventListener("click", function (evt) {game.left();       });
+    document.querySelector("#right")  .addEventListener("click", function (evt) {game.right();      });
+    document.querySelector("#change2").addEventListener("click", function (evt) {game.rotateStuff();});
+    document.querySelector("#pause")  .addEventListener("click", function (evt) {game.pauseGame();  });
+
+    var d = document.querySelector("#down");
+    d.addEventListener("touchstart", function (evt) {game.turboModeON();  });
+    d.addEventListener("touchend",   function (evt) {game.turboModeOFF(); });
+    d.addEventListener("mousedown",  function (evt) {game.turboModeON();  });
+    d.addEventListener("mouseup",    function (evt) {game.turboModeOFF(); });
+
+</script>
+</body>
+</html>
