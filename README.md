@@ -12,7 +12,7 @@
 通过 jsdelivr，可以快速将 github 上的资源用于cdn公共资源，所以，你可以使用下方的连接将本游戏组件引入你的网页里：
 
 ```html
-    <script src="https://cdn.jsdelivr.net/gh/microanswer/wzwtetris@1.0.1/dist/wzwTetirs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/microanswer/wzwtetris@1.0.1/dist/wzwTetirs.min.js"></script>
 ```
 
 然后你就可以愉快的使用了：
@@ -20,7 +20,7 @@
 ```html
 <div id="screen"></div>
 <script>
-// 新建一个俄罗斯方块游戏对象， 通过传递一个id，可一个可选的option即可。
+// 新建一个俄罗斯方块游戏对象， 通过传递一个id，和一个可选的option即可。
 var game = new WzwTetirs("screen", {
         gameWidth:      160,   /* 游戏视窗宽度 */
         gameHeight:     215,   /* 游戏视窗高度 */
@@ -32,7 +32,7 @@ var game = new WzwTetirs("screen", {
         atomSpace:      2.5,   /* 点阵间隙大小 */
         atomBorder:     1.5,   /* 点阵外轮廓粗细 */
         atomInset:      0.5    /* 点阵中间的间隙大小 */
-    });
+});
 </script>
 ```
 
@@ -42,21 +42,21 @@ var game = new WzwTetirs("screen", {
 
 ```javascript
 var option = {
-    gameWidth:       320,        /* 游戏视窗宽度 */
-    gameHeight:      430,        /* 游戏视窗高度 */
-    splitPosition:   222,        /* 左边面板和右边面板的分割点，数值以从左到右计算。 */
-    drawColor1:      '#010700',  /* 画笔浓颜色 - 就是界面上很黑的那个*/
-    drawColor2:      '#ccebce',  /* 画笔浅颜色 - 就是点阵区域后面你感觉有一层灰色的那个*/
-    bgColor:         '#dbffdd',  /* 背景颜色 */
-    lineWidth:       1,          /* 画笔粗细 - canvas 绘制时的 lineWidth 参数， 同时它也是 中间分割线的粗细 */
-    fontSize:        17,         /* 文字大小 */
-    fontSpace:       17,         /* 文字行间距 */
-    atomwidthCount:  10,         /* 游戏区域，横向的点阵个数 */
-    atomheightCount: 20,         /* 游戏区域，竖向的点阵个数 */
-    atomSpace:       5,          /* 点阵间隙大小 */
-    atomBorder:      3,          /* 点阵外轮廓粗细 */
-    atomInset:       1,          /* 点阵中间的间隙大小 */
-    useInnerKeyBoardEvent: true  /* 是否使用键盘支持 */
+    gameWidth:             320,        /* 游戏视窗宽度 */
+    gameHeight:            430,        /* 游戏视窗高度 */
+    splitPosition:         222,        /* 左边面板和右边面板的分割点，数值以从左到右计算。 */
+    drawColor1:            '#010700',  /* 画笔浓颜色 - 就是界面上很黑的那个*/
+    drawColor2:            '#ccebce',  /* 画笔浅颜色 - 就是点阵区域后面你感觉有一层灰色的那个*/
+    bgColor:               '#dbffdd',  /* 背景颜色 */
+    lineWidth:             1,          /* 画笔粗细 - canvas 绘制时的 lineWidth 参数， 同时它也是 中间分割线的粗细 */
+    fontSize:              17,         /* 文字大小 */
+    fontSpace:             17,         /* 文字行间距 */
+    atomwidthCount:        10,         /* 游戏区域，横向的点阵个数 */
+    atomheightCount:       20,         /* 游戏区域，竖向的点阵个数 */
+    atomSpace:             5,          /* 点阵间隙大小 */
+    atomBorder:            3,          /* 点阵外轮廓粗细 */
+    atomInset:             1,          /* 点阵中间的间隙大小 */
+    useInnerKeyBoardEvent: true        /* 是否使用键盘支持 */
 }
 ```
 
