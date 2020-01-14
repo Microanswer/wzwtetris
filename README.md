@@ -12,7 +12,7 @@
 通过 jsdelivr，可以快速将 github 上的资源用于cdn公共资源，所以，你可以使用下方的连接将本游戏组件引入你的网页里：
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/microanswer/wzwtetris@1.0.1/dist/wzwTetirs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/microanswer/wzwtetris@1.0.2/dist/wzwTetirs.min.js"></script>
 ```
 
 然后你就可以愉快的使用了：
@@ -22,15 +22,15 @@
 <script>
 // 新建一个俄罗斯方块游戏对象， 通过传递一个id，和一个可选的option即可。
 var game = new WzwTetirs("screen", {
-        gameWidth:      160,   /* 游戏视窗宽度 */
-        gameHeight:     215,   /* 游戏视窗高度 */
-        splitPosition:  110,   /* 左边面板和右边面板的分割点，数值以从左到右计算。 */
+        gameWidth:      200,   /* 游戏视窗宽度 */
+        gameHeight:     276,   /* 游戏视窗高度 */
+        splitPosition:  140,   /* 左边面板和右边面板的分割点，数值以从左到右计算。 */
 
         fontSize:       13,    /* 文字大小 */
         fontSpace:      13,    /* 文字行间距 */
 
-        atomSpace:      2.5,   /* 点阵间隙大小 */
-        atomBorder:     1.5,   /* 点阵外轮廓粗细 */
+        atomSpace:      3,     /* 点阵间隙大小 */
+        atomBorder:     2,     /* 点阵外轮廓粗细 */
         atomInset:      0.5    /* 点阵中间的间隙大小 */
 });
 </script>
@@ -98,6 +98,6 @@ game.resetGame();
 
 # 历史版本 - history
 
-- 1.0.1 修复堆砌到顶部后，再消一行，顶部的材料没有跟随下落。\
-加入一次消除4行则多加一分的加分逻辑。
+- 1.0.2 修复暂停后还能左右移动、变型的BUG。优化代码结构。
+- 1.0.1 (1)修复堆砌到顶部后，再消一行，顶部的材料没有跟随下落。(2)加入一次消除4行则多加一分的加分逻辑。
 - 1.0.0 发布第一版本。

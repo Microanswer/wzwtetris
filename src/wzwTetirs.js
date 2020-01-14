@@ -56,23 +56,23 @@ window.WzwTetirs = function (domId, option) {
     var atomBorder      = option.atomBorder        || 3;         /* 点阵外轮廓粗细 */
     var atomInset       = option.atomInset         || 1;         /* 点阵中间的间隙大小 */
 
-    var currStuff       = null;                           /* 当前正在下落的材料 */
-    var stuffOffsetX    = STUFF_START_X_OFFSET;           /* 材料每次开始下落时将使用此数字从左到右指定点阵个数的偏移量向下掉落 */
-    var stuffOffsetY    = STUFF_START_Y_OFFSET;           /* 材料每次开始下落时将使用此数字从上到下指定某个点阵数偏移量向下掉落 */
-    var nextStuff       = null;                           /* 下一个要降落的材料方块 */
-    var gameAtoms       = null;                           /* array。整个游戏操作面板，本质上是在操作此数组。 */
-    var staticStuffs    = null;                           /* array。已被确认堆砌的材料将在这个数组里保存。*/
+    var currStuff       = null;                                  /* 当前正在下落的材料 */
+    var stuffOffsetX    = STUFF_START_X_OFFSET;                  /* 材料每次开始下落时将使用此数字从左到右指定点阵个数的偏移量向下掉落 */
+    var stuffOffsetY    = STUFF_START_Y_OFFSET;                  /* 材料每次开始下落时将使用此数字从上到下指定某个点阵数偏移量向下掉落 */
+    var nextStuff       = null;                                  /* 下一个要降落的材料方块 */
+    var gameAtoms       = null;                                  /* array。整个游戏操作面板，本质上是在操作此数组。 */
+    var staticStuffs    = null;                                  /* array。已被确认堆砌的材料将在这个数组里保存。*/
 
-    var resetAtoms      = null;                           /* array。重置动画将使用此变量保存所有点阵信息 */
-    var turbo           = false;                          /* 为true则是急速模式，此模式下材料下降很快 */
-    var succAniming     = false;                          /* 当有成功的行在进行消除动画时，此字段将为true，通过此字段控制正在消除动画时是否降落新材料。 */
-    var gameover        = true;                           /* 标记游戏是否结束 */
-    var pause           = false;                          /* 标记是否暂停*/
+    var resetAtoms      = null;                                  /* array。重置动画将使用此变量保存所有点阵信息 */
+    var turbo           = false;                                 /* 为true则是急速模式，此模式下材料下降很快 */
+    var succAniming     = false;                                 /* 当有成功的行在进行消除动画时，此字段将为true，通过此字段控制正在消除动画时是否降落新材料。 */
+    var gameover        = true;                                  /* 标记游戏是否结束 */
+    var pause           = false;                                 /* 标记是否暂停*/
 
-    var bestscore       = 0;                              /* 最佳成绩·本地保存 */
-    var score           = 0;                              /* 游戏成绩 */
-    var level           = 0;                              /* 当前游戏等级 */
-    var onKeyDownEventHander = {                          /* 键盘按键按下事件及对应处理方法。 */
+    var bestscore       = 0;                                     /* 最佳成绩·本地保存 */
+    var score           = 0;                                     /* 游戏成绩 */
+    var level           = 0;                                     /* 当前游戏等级 */
+    var onKeyDownEventHander = {                                 /* 键盘按键按下事件及对应处理方法。 */
         "87": function () {rotateStuff();},
         "38": function () {rotateStuff();},
         "83": function () {turboModeON();},
@@ -83,7 +83,7 @@ window.WzwTetirs = function (domId, option) {
         "39": function () {right();},
         "32": function () {rotateStuff();},
     };
-    var onKeyUpEventHander = {                            /* 键盘抬起事件及对应处理方法 */
+    var onKeyUpEventHander = {                                   /* 键盘抬起事件及对应处理方法 */
         "83": function () {turboModeOFF();},
         "40": function () {turboModeOFF();}
     };
@@ -111,6 +111,7 @@ window.WzwTetirs = function (domId, option) {
         canvas.height = gameHeight;
         canvas.canvas.width  = gameWidth;
         canvas.canvas.height = gameHeight;
+        canvas.translate(0.5,0.5);
 
 
         return canvas;
@@ -218,7 +219,7 @@ window.WzwTetirs = function (domId, option) {
 
     /* 移动当前正在掉落的材料。 count 为移动几格，负数则是左移 */
     function _moveCurrStuff (count) {
-        if (gameAtoms && currStuff && staticStuffs) {
+        if (gameAtoms && currStuff && staticStuffs && (!pause)) {
             var targetOffsetX = stuffOffsetX + count;
 
             for (var i = 0; i < currStuff.length; i++) {
@@ -243,29 +244,7 @@ window.WzwTetirs = function (domId, option) {
                 }
             }
 
-
-            for (i = 0; i < staticStuffs.length; i++) {
-                for (j = 0; j < staticStuffs[j].length; j++) {
-                    gameAtoms[i][j] = staticStuffs[i][j];
-                }
-            }
-
-            // 根据新的 offset ，进行对 gameAtoms 整列重新赋值。
-            for (i = 0; i < currStuff.length; i++) {
-                for (j = 0; j < currStuff[i].length; j++) {
-                    if (stuffOffsetY + i < 0 || targetOffsetX + j < 0 || stuffOffsetY + i >= atomheightCount) {
-                        continue;
-                    }
-
-                    if (
-                        gameAtoms[stuffOffsetY + i][targetOffsetX + j] === 0 &&
-                        currStuff[i][j] === 1
-                    ) {
-                        gameAtoms[stuffOffsetY + i][targetOffsetX + j] = currStuff[i][j];
-                    }
-                }
-            }
-
+            gameAtoms = _addStuffToGameAtoms(targetOffsetX, stuffOffsetY, currStuff);
             stuffOffsetX = targetOffsetX;
         }
     }
@@ -397,23 +376,7 @@ window.WzwTetirs = function (domId, option) {
         /* 将 currStuff 融合到 mGameAtoms 里面 */
         if (!grounded) {
             mStuffOffsetY = stuffOffsetY = mStuffOffsetY + 1;
-
-            mGameAtoms = gameAtoms = Util.arrCopy(mStaticStuffs);
-
-            for (i = 0; i < currStuff.length; i++) {
-                for (j = 0; j < currStuff[i].length; j++) {
-                    if (mStuffOffsetY + i < 0 || stuffOffsetX + j < 0 || mStuffOffsetY + i >= atomheightCount) {
-                        continue;
-                    }
-
-                    if (
-                        mGameAtoms[mStuffOffsetY + i][stuffOffsetX + j] === 0 &&
-                        currStuff[i][j] === 1
-                    ) {
-                        mGameAtoms[mStuffOffsetY + i][stuffOffsetX + j] = currStuff[i][j];
-                    }
-                }
-            }
+            mGameAtoms = gameAtoms = _addStuffToGameAtoms(stuffOffsetX, mStuffOffsetY, currStuff);
         }
 
         /* 如果触底了，则将 mGameAtoms 保存一份为 mStaticStuffs */
@@ -423,6 +386,27 @@ window.WzwTetirs = function (domId, option) {
 
 
         return grounded ? 1 : 0;
+    }
+
+    /* 将指定stuff 添加到 游戏数组 staticStuffs 里面，按照指定位置添加，然后返回添加完成的结果,这个结果预期是赋值给gameAtoms的 */
+    function _addStuffToGameAtoms (stuffOffsetX, stuffOffsetY, stuff) {
+        var mGameAtoms = Util.arrCopy(staticStuffs);
+
+        for (var i = 0; i < stuff.length; i++) {
+            for (var j = 0; j < stuff[i].length; j++) {
+                if (
+                    stuffOffsetY + i < 0 ||
+                    stuffOffsetX +j < 0 ||
+                    stuffOffsetY + i >= atomheightCount ||
+                    stuff[i][j] !== 1
+                ) {
+                    continue;
+                }
+                mGameAtoms[stuffOffsetY + i][stuffOffsetX + j] = stuff[i][j];
+            }
+        }
+
+        return mGameAtoms;
     }
 
     /* x 所有点阵起始计算横坐标点 */
@@ -695,7 +679,7 @@ window.WzwTetirs = function (domId, option) {
 
     /* 旋转材料。 此方法只有在游戏中有效，可以将正在下落的材料进行顺时针90度旋转。 */
     function rotateStuff () {
-        if (gameAtoms && currStuff) {
+        if (gameAtoms && currStuff && (!pause)) {
             var temp = [[], [], [], []];
 
             // 进行旋转材料
@@ -730,25 +714,8 @@ window.WzwTetirs = function (domId, option) {
 
             /* 变化了之后，重新赋值数组，让界面变化。 */
             currStuff = temp;
-            for (i = 0; i < staticStuffs.length; i++) {
-                for (j = 0; j < staticStuffs[j].length; j++) {
-                    gameAtoms[i][j] = staticStuffs[i][j];
-                }
-            }
-            for (i = 0; i < currStuff.length; i++) {
-                for (j = 0; j < currStuff[i].length; j++) {
-                    if (stuffOffsetY + i < 0 || stuffOffsetX + j < 0 || stuffOffsetY + i >= atomheightCount) {
-                        continue;
-                    }
 
-                    if (
-                        gameAtoms[stuffOffsetY + i][stuffOffsetX + j] === 0 &&
-                        currStuff[i][j] === 1
-                    ) {
-                        gameAtoms[stuffOffsetY + i][stuffOffsetX + j] = currStuff[i][j];
-                    }
-                }
-            }
+            gameAtoms = _addStuffToGameAtoms(stuffOffsetX, stuffOffsetY, currStuff);
         }
     }
 
