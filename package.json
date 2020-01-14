@@ -1,12 +1,18 @@
 {
   "name": "wzwtetris",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "高仿王中王游戏机里的俄罗斯方块",
   "main": "index.js",
   "dependencies": {
+    "@babel/polyfill": "^7.8.3",
     "webpack": "^4.41.5"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "babel-loader": "^8.0.6"
+  },
   "scripts": {
     "build": "node ./build/doBuild"
   },

@@ -3,13 +3,13 @@ let {LEVELS, SCORE_LEVELS}     = require("./wzw_levels");
 let Util                       = require("./wzw_util");
 
 /**
- * 高仿王中王游戏机烈面的俄罗斯方块游戏。
+ * 高仿王中王游戏机里面的俄罗斯方块游戏。
  *
  * 具备功能：
- * 1、左移方块
- * 2、右移方块
+ * 1、左移方块。
+ * 2、右移方块。
  * 3、快速下降。[1]支持直接下降到底，[2]支持下降到一定距离手动停止快速下降。
- * 4、下降素材变型
+ * 4、下降素材变型。
  * 5、防止溢出。素材不会被移动或变型到屏幕外。
  * 6、防止重叠。素材不会被或变型到已堆砌的素材上。
  * 7、成功行消减动画。
@@ -24,54 +24,54 @@ window.WzwTetirs = function (domId, option) {
 
     option = option || {};
 
-    /* 默认使用内部的键盘操作逻辑 */
+    /* 默认使用内部的键盘操作逻辑。 */
     if (!option.hasOwnProperty("useInnerKeyBoardEvent")) {
         option.useInnerKeyBoardEvent = true;
     }
 
-    /* 急速模式的时间间隔 */
+    /* 急速模式的时间间隔。 */
     var TURBO_TIME_SPACE = 3;
 
-    /* 材料每次开始下落时将使用此数字从左到右指定点阵个数的偏移量向下掉落 */
+    /* 材料每次开始下落时将使用此数字从左到右指定点阵个数的偏移量向下掉落。 */
     var STUFF_START_X_OFFSET = 3;
     var STUFF_START_Y_OFFSET = -3;
 
-    var gameWidth       = option.gameWidth         || 320;       /* 游戏视窗宽度 */
-    var gameHeight      = option.gameHeight        || 430;       /* 游戏视窗高度 */
-    var gameDom         = null;                                  /* 游戏dom容器 */
-    var gameCanvas      = null;                                  /* 游戏画板 */
+    var gameWidth       = option.gameWidth         || 320;       /* 游戏视窗宽度。 */
+    var gameHeight      = option.gameHeight        || 430;       /* 游戏视窗高度。 */
+    var gameDom         = null;                                  /* 游戏dom容器。 */
+    var gameCanvas      = null;                                  /* 游戏画板。 */
     var splitPosition   = option.splitPosition     || 222;       /* 左边面板和右边面板的分割点，数值以从左到右计算。 */
-    var drawColor1      = option.drawColor1        || '#010700'; /* 画笔浓颜色 */
-    var drawColor2      = option.drawColor2        || '#ccebce'; /* 画笔浅颜色 */
-    var bgColor         = option.bgColor           || '#dbffdd'; /* 背景颜色 */
-    var lineWidth       = option.lineWidth         || 1;         /* 画笔粗细 */
-    var fontSize        = option.fontSize          || 17;        /* 文字大小 */
+    var drawColor1      = option.drawColor1        || '#010700'; /* 画笔浓颜色。 */
+    var drawColor2      = option.drawColor2        || '#ccebce'; /* 画笔浅颜色。 */
+    var bgColor         = option.bgColor           || '#dbffdd'; /* 背景颜色。 */
+    var lineWidth       = option.lineWidth         || 1;         /* 画笔粗细。 */
+    var fontSize        = option.fontSize          || 17;        /* 文字大小。 */
     var fontSpace       = option.fontSpace         || 17;        /* 文字行间距 */
 
-    var atomwidthCount  = option.atomwidthCount    || 10;        /* 游戏区域，横向的点阵个数 */
-    var atomheightCount = option.atomheightCount   || 20;        /* 游戏区域，竖向的点阵个数 */
-    var atomWidth       = null;                                  /* 单个点阵宽度 */
-    var atomHeight      = null;                                  /* 单个点阵高度 */
-    var atomSpace       = option.atomSpace         || 5;         /* 点阵间隙大小 */
-    var atomBorder      = option.atomBorder        || 3;         /* 点阵外轮廓粗细 */
-    var atomInset       = option.atomInset         || 1;         /* 点阵中间的间隙大小 */
+    var atomwidthCount  = option.atomwidthCount    || 10;        /* 游戏区域，横向的点阵个数。 */
+    var atomheightCount = option.atomheightCount   || 20;        /* 游戏区域，竖向的点阵个数。 */
+    var atomWidth       = null;                                  /* 单个点阵宽度。 */
+    var atomHeight      = null;                                  /* 单个点阵高度。 */
+    var atomSpace       = option.atomSpace         || 5;         /* 点阵间隙大小。 */
+    var atomBorder      = option.atomBorder        || 3;         /* 点阵外轮廓粗细。 */
+    var atomInset       = option.atomInset         || 1;         /* 点阵中间的间隙大小。 */
 
-    var currStuff       = null;                                  /* 当前正在下落的材料 */
-    var stuffOffsetX    = STUFF_START_X_OFFSET;                  /* 材料每次开始下落时将使用此数字从左到右指定点阵个数的偏移量向下掉落 */
-    var stuffOffsetY    = STUFF_START_Y_OFFSET;                  /* 材料每次开始下落时将使用此数字从上到下指定某个点阵数偏移量向下掉落 */
-    var nextStuff       = null;                                  /* 下一个要降落的材料方块 */
+    var stuffOffsetX    = STUFF_START_X_OFFSET;                  /* 材料每次开始下落时将使用此数字从左到右指定点阵个数的偏移量向下掉落。 */
+    var stuffOffsetY    = STUFF_START_Y_OFFSET;                  /* 材料每次开始下落时将使用此数字从上到下指定某个点阵数偏移量向下掉落。 */
+    var currStuff       = null;                                  /* array。当前正在下落的材料。 */
+    var nextStuff       = null;                                  /* array。下一个要降落的材料方块。 */
     var gameAtoms       = null;                                  /* array。整个游戏操作面板，本质上是在操作此数组。 */
     var staticStuffs    = null;                                  /* array。已被确认堆砌的材料将在这个数组里保存。*/
 
-    var resetAtoms      = null;                                  /* array。重置动画将使用此变量保存所有点阵信息 */
-    var turbo           = false;                                 /* 为true则是急速模式，此模式下材料下降很快 */
+    var resetAtoms      = null;                                  /* array。重置动画将使用此变量保存所有点阵信息。 */
+    var turbo           = false;                                 /* 为true则是急速模式，此模式下材料下降很快。 */
     var succAniming     = false;                                 /* 当有成功的行在进行消除动画时，此字段将为true，通过此字段控制正在消除动画时是否降落新材料。 */
-    var gameover        = true;                                  /* 标记游戏是否结束 */
-    var pause           = false;                                 /* 标记是否暂停*/
+    var gameover        = true;                                  /* 标记游戏是否结束。 */
+    var pause           = false;                                 /* 标记是否暂停。 */
 
-    var bestscore       = 0;                                     /* 最佳成绩·本地保存 */
-    var score           = 0;                                     /* 游戏成绩 */
-    var level           = 0;                                     /* 当前游戏等级 */
+    var bestscore       = 0;                                     /* 最佳成绩·本地保存。 */
+    var score           = 0;                                     /* 游戏成绩。 */
+    var level           = 0;                                     /* 当前游戏等级。 */
     var onKeyDownEventHander = {                                 /* 键盘按键按下事件及对应处理方法。 */
         "87": function () {rotateStuff();},
         "38": function () {rotateStuff();},
@@ -83,12 +83,12 @@ window.WzwTetirs = function (domId, option) {
         "39": function () {right();},
         "32": function () {rotateStuff();},
     };
-    var onKeyUpEventHander = {                                   /* 键盘抬起事件及对应处理方法 */
+    var onKeyUpEventHander = {                                   /* 键盘抬起事件及对应处理方法。 */
         "83": function () {turboModeOFF();},
         "40": function () {turboModeOFF();}
     };
 
-    /* 初始化游戏根容器方法 */
+    /* 初始化游戏根容器方法。 */
     function initGameDom (domId) {
         var gameDom = document.querySelector("#" + domId);
         gameDom.style.width = gameWidth + "px";
@@ -99,7 +99,7 @@ window.WzwTetirs = function (domId, option) {
         return gameDom;
     }
 
-    /* 初始化画板 */
+    /* 初始化画板。 */
     function initGameCanvas (gameDom) {
         var canvasDom = document.createElement("canvas");
         canvasDom.width = gameWidth;
@@ -117,7 +117,7 @@ window.WzwTetirs = function (domId, option) {
         return canvas;
     }
 
-    /* 初始化一些游戏逻辑参数值 */
+    /* 初始化一些游戏逻辑参数值。 */
     function initLogic () {
         /* 根据 splitPosition 计算出点阵大小数值 */
         var gameAreaWidth = splitPosition - lineWidth;
@@ -132,7 +132,7 @@ window.WzwTetirs = function (domId, option) {
         bestscore = window.localStorage && window.localStorage.getItem("bestscore") || 0;
     }
 
-    /* 初始化事件：点击、键盘事件 */
+    /* 初始化事件：点击、键盘事件。 */
     function initEvent () {
         if (!option.useInnerKeyBoardEvent) {
             return;
@@ -154,7 +154,7 @@ window.WzwTetirs = function (domId, option) {
         };
     }
 
-    /* 此方法将随机产生一个用于游戏的堆砌材料 */
+    /* 此方法将随机产生一个用于游戏的堆砌材料。 */
     function randomStuff () {
         var index = Math.floor(Math.random() * STUFS.length);
         return [].concat(STUFS[index]);
@@ -202,7 +202,7 @@ window.WzwTetirs = function (domId, option) {
         })
     }
 
-    /* 重置游戏 */
+    /* 重置游戏。 */
     function _resetGame () {
         gameover     = true;
         gameAtoms    = null;
@@ -217,30 +217,32 @@ window.WzwTetirs = function (domId, option) {
         stuffOffsetY = STUFF_START_Y_OFFSET;
     }
 
-    /* 移动当前正在掉落的材料。 count 为移动几格，负数则是左移 */
+    /* 移动当前正在掉落的材料。 count 为移动几格，负数则是左移。 */
     function _moveCurrStuff (count) {
         if (gameAtoms && currStuff && staticStuffs && (!pause)) {
             var targetOffsetX = stuffOffsetX + count;
 
             for (var i = 0; i < currStuff.length; i++) {
                 for (var j = 0; j < currStuff[i].length; j++) {
-                    if (currStuff[i][j] === 1) {
-                        if (targetOffsetX + j < 0) {
-                            /* 传入的目标位数会导致移动到屏幕左边的外面。则强制让其在屏幕内。 */
-                            targetOffsetX = -j;
-                        } else if (targetOffsetX + j > atomwidthCount - 1) {
-                            /* 传入的目标位数会导致移动到屏幕右边的外面。则强制让其在屏幕内。 */
-                            targetOffsetX = atomwidthCount - j - 1;
-                        }
-
-                        /* 材料还没完全下降到屏幕内 */
-                        if (stuffOffsetY + i < 0) continue;
-
-                        /* 判断新位置上是否有材料了，有就不能进行移动 */
-                        if (staticStuffs[stuffOffsetY + i][targetOffsetX + j] === 1) {
-                            return;
-                        }
+                    if (currStuff[i][j] !== 1) {
+                        continue;
                     }
+                    if (targetOffsetX + j < 0) {
+                        /* 传入的目标位数会导致移动到屏幕左边的外面。则强制让其在屏幕内。 */
+                        targetOffsetX = -j;
+                    } else if (targetOffsetX + j > atomwidthCount - 1) {
+                        /* 传入的目标位数会导致移动到屏幕右边的外面。则强制让其在屏幕内。 */
+                        targetOffsetX = atomwidthCount - j - 1;
+                    }
+
+                    /* 材料还没完全下降到屏幕内 */
+                    if (stuffOffsetY + i < 0) continue;
+
+                    /* 判断新位置上是否有材料了，有就不能进行移动 */
+                    if (staticStuffs[stuffOffsetY + i][targetOffsetX + j] === 1) {
+                        return;
+                    }
+
                 }
             }
 
@@ -249,7 +251,7 @@ window.WzwTetirs = function (domId, option) {
         }
     }
 
-    /*检查堆砌成功的行，并进行消除*/
+    /* 检查堆砌成功的行，并进行消除。 */
     function checkSuccessLine() {
 
         var successLine = [];
@@ -338,8 +340,8 @@ window.WzwTetirs = function (domId, option) {
         });
     }
 
-    /* 将 currStuff 材料通过指定的横向偏移量 stuffOffsetX 进行融合，并将 stuffOffsetY 下降1格。*/
-    /* 如果 currStuff 材料已经到达了 gameAtoms 底部或已有材料的底部将返回 1， 检查游戏结束将返回 -1，其他的放回0表示正常 */
+    /* 将 currStuff 材料通过指定的横向偏移量 stuffOffsetX和stuffOffsetY 进行融合，并将 stuffOffsetY 下降1格。*/
+    /* 如果 currStuff 材料已经到达了 gameAtoms 底部或已有材料的底部将返回 1， 检查游戏结束将返回 -1，其他的放回0表示正常。 */
     function _GameArrMerge (stuffOffsetX, mStuffOffsetY, currStuff, mGameAtoms, mStaticStuffs) {
 
         var grounded = false;
@@ -388,7 +390,8 @@ window.WzwTetirs = function (domId, option) {
         return grounded ? 1 : 0;
     }
 
-    /* 将指定stuff 添加到 游戏数组 staticStuffs 里面，按照指定位置添加，然后返回添加完成的结果,这个结果预期是赋值给gameAtoms的 */
+    /* 将指定stuff 添加到 游戏数组 staticStuffs 里面，按照指定位置添加，然后返回添加完成的结果,这个结果预期是赋值给gameAtoms的。 */
+    /* 本方法本身不会修改 staticStuffs。 */
     function _addStuffToGameAtoms (stuffOffsetX, stuffOffsetY, stuff) {
         var mGameAtoms = Util.arrCopy(staticStuffs);
 
@@ -409,12 +412,12 @@ window.WzwTetirs = function (domId, option) {
         return mGameAtoms;
     }
 
-    /* x 所有点阵起始计算横坐标点 */
-    /* y 所有点阵起始计算竖坐标点 */
-    /* 绘制一个点阵，通过 2 个下标确定绘制具体哪一个点阵 */
-    /* 下标的数值规则是：从左上角到右上交 widthIndex 1~10 */
-    /* 从左上角到左下交 heightIndex 1~20 */
-    /* c 绘制颜色 */
+    /* startX 所有点阵起始计算横坐标点。 */
+    /* startY 所有点阵起始计算竖坐标点。 */
+    /* 绘制一个点阵，通过 2 个index下标确定绘制具体哪一个点阵。 */
+    /* 下标的数值规则是：从左上角到右上交 widthIndex 1~10。 */
+    /* 从左上角到左下交 heightIndex 1~20。 */
+    /* c 绘制颜色。 */
     function renderAtom (startX, startY, widthIndex, heightIndex, ctx, c) {
         var x = startX + (widthIndex * (atomSpace + atomWidth)) - atomWidth;
         var y = startY + (heightIndex * (atomSpace + atomHeight)) - atomHeight;
@@ -441,7 +444,7 @@ window.WzwTetirs = function (domId, option) {
         ctx.fillStyle = ofc;
     }
 
-    /* 绘制左边游戏面板 */
+    /* 绘制左边游戏面板。 */
     function renderLeft (ctx) {
         /* 先绘制点阵背景 */
         for (var i = 1; i <= atomwidthCount; i++) {
@@ -467,16 +470,15 @@ window.WzwTetirs = function (domId, option) {
             for (i = resetAtoms.length - 1; i >= 0; i--) {
                 if (resetAtoms[i]) {
                     for (j = resetAtoms[i].length - 1; j >= 0 ; j--) {
-                        if (resetAtoms[i][j] === 1) {
-                            renderAtom(0, 0, j+1, i+1, ctx, drawColor1);
-                        }
+                        if (resetAtoms[i][j] !== 1) continue;
+                        renderAtom(0, 0, j + 1, i + 1, ctx, drawColor1);
                     }
                 }
             }
         }
     }
 
-    /* 绘制右边 下一个方块，游戏成绩 */
+    /* 绘制右边 下一个方块，游戏成绩。 */
     function renderRight (ctx) {
 
         /* 绘制游戏成绩 */
@@ -498,10 +500,8 @@ window.WzwTetirs = function (domId, option) {
 
                 /* 绘制预备材料 */
                 if (nextStuff) {
-                    var ns = nextStuff[j - 1][i - 1];
-                    if (ns === 1) {
-                        renderAtom(splitPosition, yOffset, i, j, ctx, drawColor1);
-                    }
+                    if (nextStuff[j - 1][i - 1] !== 1) continue;
+                    renderAtom(splitPosition, yOffset, i, j, ctx, drawColor1);
                 }
             }
         }
@@ -530,7 +530,7 @@ window.WzwTetirs = function (domId, option) {
         }
     }
 
-    /* 此方法会被循环调用，用于绘制游戏内容 */
+    /* 此方法会被循环调用，用于绘制游戏内容。 */
     function onRender (ctx) {
         ctx.strokeStyle = drawColor1;
         ctx.fillStyle   = bgColor;
@@ -553,7 +553,7 @@ window.WzwTetirs = function (domId, option) {
         renderRight(ctx);
     }
 
-    /* 开始执行绘制 */
+    /* 开始执行绘制。 */
     function render (ctx) {
         (function loop () {
             onRender(ctx);
@@ -658,21 +658,21 @@ window.WzwTetirs = function (domId, option) {
         })();
     }
 
-    /*暂停游戏，再次调用则恢复*/
+    /* 暂停游戏，再次调用则恢复。 */
     function pauseGame () {
         if (!gameover && gameAtoms && staticStuffs) {
             pause = !pause;
         }
     }
 
-    /*开启急速模式，急速模式下落完成一个材料后自动关闭，也可以手动调用 turboModeOFF 方法关闭，*/
+    /* 开启急速模式，急速模式下落完成一个材料后自动关闭，也可以手动调用 turboModeOFF 方法关闭。*/
     function turboModeON() {
         if (gameAtoms && currStuff) {
             turbo = true;
         }
     }
 
-    /* 关闭急速模式 */
+    /* 关闭急速模式。 */
     function turboModeOFF() {
         turbo = false;
     }
@@ -719,17 +719,17 @@ window.WzwTetirs = function (domId, option) {
         }
     }
 
-    /* 将材料向左边移动一格 */
+    /* 将材料向左边移动一格。 */
     function left () {
         _moveCurrStuff(-1);
     }
 
-    /* 将材料向右边移动一格 */
+    /* 将材料向右边移动一格。 */
     function right () {
         _moveCurrStuff(1);
     }
 
-    /* 结束游戏、复位 */
+    /* 结束游戏、复位。 */
     function resetGame () {
         if (gameover) {
             return;
@@ -748,6 +748,26 @@ window.WzwTetirs = function (domId, option) {
         });
     }
 
+    /* 是否暂停。 */
+    function isPaused () {
+        return pause;
+    }
+
+    /* 获取当前成绩。 */
+    function getScore() {
+        return score;
+    }
+
+    /* 获取当前等级。 */
+    function getLevel() {
+        return score;
+    }
+
+    /* 获取当前下降的材料。 */
+    function getCuffStuf() {
+        return currStuff;
+    }
+
     gameDom    = initGameDom(domId);
     gameCanvas = initGameCanvas(gameDom);
     initLogic();
@@ -762,4 +782,8 @@ window.WzwTetirs = function (domId, option) {
     this.left         = left;
     this.right        = right;
     this.resetGame    = resetGame;
+    this.isPaused     = isPaused;
+    this.getScore     = getScore;
+    this.getLevel     = getLevel;
+    this.getCuffStuf  = getCuffStuf;
 };

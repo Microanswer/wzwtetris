@@ -7,7 +7,12 @@ const webpackCfg = {
         path: path.resolve(__dirname, '../dist'),
         filename: 'wzwTetirs.min.js'
     },
-    mode: 'production'
+    mode: 'production',
+    module: {
+        rules: [
+            { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
+        ]
+    }
 };
 
 console.log("开始...");

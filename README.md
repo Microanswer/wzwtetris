@@ -12,7 +12,7 @@
 通过 jsdelivr，可以快速将 github 上的资源用于cdn公共资源，所以，你可以使用下方的连接将本游戏组件引入你的网页里：
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/microanswer/wzwtetris@1.0.2/dist/wzwTetirs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/microanswer/wzwtetris@1.0.3/dist/wzwTetirs.min.js"></script>
 ```
 
 然后你就可以愉快的使用了：
@@ -22,16 +22,16 @@
 <script>
 // 新建一个俄罗斯方块游戏对象， 通过传递一个id，和一个可选的option即可。
 var game = new WzwTetirs("screen", {
-        gameWidth:      200,   /* 游戏视窗宽度 */
-        gameHeight:     276,   /* 游戏视窗高度 */
+        gameWidth:      200,   /* 游戏视窗宽度。 */
+        gameHeight:     276,   /* 游戏视窗高度。 */
         splitPosition:  140,   /* 左边面板和右边面板的分割点，数值以从左到右计算。 */
 
-        fontSize:       13,    /* 文字大小 */
-        fontSpace:      13,    /* 文字行间距 */
+        fontSize:       13,    /* 文字大小。 */
+        fontSpace:      13,    /* 文字行间距。 */
 
-        atomSpace:      3,     /* 点阵间隙大小 */
-        atomBorder:     2,     /* 点阵外轮廓粗细 */
-        atomInset:      0.5    /* 点阵中间的间隙大小 */
+        atomSpace:      3,     /* 点阵间隙大小。 */
+        atomBorder:     2,     /* 点阵外轮廓粗细。 */
+        atomInset:      0.5    /* 点阵中间的间隙大小。 */
 });
 </script>
 ```
@@ -42,21 +42,21 @@ var game = new WzwTetirs("screen", {
 
 ```javascript
 var option = {
-    gameWidth:             320,        /* 游戏视窗宽度 */
-    gameHeight:            430,        /* 游戏视窗高度 */
+    gameWidth:             320,        /* 游戏视窗宽度。 */
+    gameHeight:            430,        /* 游戏视窗高度。 */
     splitPosition:         222,        /* 左边面板和右边面板的分割点，数值以从左到右计算。 */
-    drawColor1:            '#010700',  /* 画笔浓颜色 - 就是界面上很黑的那个*/
-    drawColor2:            '#ccebce',  /* 画笔浅颜色 - 就是点阵区域后面你感觉有一层灰色的那个*/
-    bgColor:               '#dbffdd',  /* 背景颜色 */
-    lineWidth:             1,          /* 画笔粗细 - canvas 绘制时的 lineWidth 参数， 同时它也是 中间分割线的粗细 */
-    fontSize:              17,         /* 文字大小 */
-    fontSpace:             17,         /* 文字行间距 */
-    atomwidthCount:        10,         /* 游戏区域，横向的点阵个数 */
-    atomheightCount:       20,         /* 游戏区域，竖向的点阵个数 */
-    atomSpace:             5,          /* 点阵间隙大小 */
-    atomBorder:            3,          /* 点阵外轮廓粗细 */
-    atomInset:             1,          /* 点阵中间的间隙大小 */
-    useInnerKeyBoardEvent: true        /* 是否使用键盘支持 */
+    drawColor1:            '#010700',  /* 画笔浓颜色 - 就是界面上很黑的那个。 */
+    drawColor2:            '#ccebce',  /* 画笔浅颜色 - 就是点阵区域后面你感觉有一层灰色的那个。 */
+    bgColor:               '#dbffdd',  /* 背景颜色。 */
+    lineWidth:             1,          /* 画笔粗细 - canvas 绘制时的 lineWidth 参数， 同时它也是 中间分割线的粗细。 */
+    fontSize:              17,         /* 文字大小。 */
+    fontSpace:             17,         /* 文字行间距。 */
+    atomwidthCount:        10,         /* 游戏区域，横向的点阵个数。 */
+    atomheightCount:       20,         /* 游戏区域，竖向的点阵个数。 */
+    atomSpace:             5,          /* 点阵间隙大小。 */
+    atomBorder:            3,          /* 点阵外轮廓粗细。 */
+    atomInset:             1,          /* 点阵中间的间隙大小。 */
+    useInnerKeyBoardEvent: true        /* 是否使用键盘支持。 */
 }
 ```
 
@@ -88,16 +88,28 @@ game.right();
 // 复位/重置游戏。
 game.resetGame();
 
+// 获取当前是否暂停状态。
+game.isPaused();
+
+// 获取当前成绩。
+game.getScore();
+
+// 获取当前等级。
+game.getLevel();
+
+// 获取当前正在下落的材料，可能是 null。
+game.getCuffStuf();
+
 ```
 
 
 # 博文 - blog
 
-
 [立即查看博文](https://www.microanswer.cn/blog/68)
 
 # 历史版本 - history
 
+- 1.0.3 公共文件已转为es5格式代码，之前版本的都是夹杂着部分es6语法可能运行不正常。
 - 1.0.2 修复暂停后还能左右移动、变型的BUG。优化代码结构。
 - 1.0.1 (1)修复堆砌到顶部后，再消一行，顶部的材料没有跟随下落。(2)加入一次消除4行则多加一分的加分逻辑。
 - 1.0.0 发布第一版本。

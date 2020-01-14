@@ -1,4 +1,4 @@
-module.exports = {
+function Util() {
 
     /**
      * 滚动。 此方法并不滚动界面，而是将一个数值变化到另一个数值。
@@ -7,7 +7,7 @@ module.exports = {
      * @param back 不停的回调
      * @param dur 动画执行时长，默认 500 毫秒
      */
-    scroll: function (from, to, back, dur) {
+    this.scroll = function (from, to, back, dur) {
         var y = from;
         y = y || 0;
         var startY = y;
@@ -48,23 +48,23 @@ module.exports = {
                 }
             }, 1000 / ftp);
         })();
-    },
+    };
 
     /*
      打印数组
      * */
-    printArr: function (arr) {
+    this.printArr = function (arr) {
         var s = "";
-        each(arr, function (i, arrr) {
+        this.each(arr, function (i, arrr) {
             s += (i + ":" + arrr.join(" ")) + "\n";
         });
         console.log(s);
-    },
+    };
 
     /**
      * 二维数组拷贝
      * */
-    arrCopy: function (src) {
+    this.arrCopy = function (src) {
         var temp = [];
         for (var i = 0; i < src.length; i++) {
             temp[i] = [];
@@ -73,7 +73,7 @@ module.exports = {
             }
         }
         return temp;
-    },
+    };
 
     /**
      * 循环数字
@@ -81,7 +81,7 @@ module.exports = {
      * @param to 到
      * @param fun 每次调用
      */
-    eachNum: function (from, to, fun) {
+    this.eachNum = function (from, to, fun) {
         if (from > to) {
 
             for (var i = from; i >= to; i--) {
@@ -93,12 +93,14 @@ module.exports = {
         for (var i = from; i <= to; i++) {
             fun && fun(i);
         }
-    },
+    };
 
     /* 循环数组 */
-    each: function (arr, fun) {
+    this.each = function (arr, fun) {
         for (var i = 0; i < arr.length; i++) {
             fun && fun(i, arr[i]);
         }
     }
 }
+
+module.exports = new Util();
