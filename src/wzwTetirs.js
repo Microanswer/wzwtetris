@@ -456,12 +456,10 @@ window.WzwTetirs = function (domId, option) {
         /* 绘制游戏数组 */
         if (gameAtoms) {
             for (i = 0; i < gameAtoms.length; i++) {
-                for (j = 0; j < gameAtoms[i].length; j++) {
-                    if (gameAtoms[i][j] === 1) {
-                        renderAtom(0, 0, j + 1, i + 1, ctx, drawColor1);
-                    }
-                }
-            }
+            for (j = 0; j < gameAtoms[i].length; j++) {
+                if (gameAtoms[i][j] !== 1) continue;
+                renderAtom(0, 0, j + 1, i + 1, ctx, drawColor1);
+            }}
         }
 
 
